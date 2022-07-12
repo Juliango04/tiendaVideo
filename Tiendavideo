@@ -1,0 +1,88 @@
+package tiendavideo;
+import java.util.Scanner;
+/**
+ *
+ * @author leobusta
+ */
+ public class Tiendavideo {
+   
+    private final String nombre;
+    private final Producto[] productos;
+    private int ultimo;
+
+    Tiendavideo(String nombre){
+        productos = new Producto[100];
+        this.nombre = nombre;
+        ultimo = 0;
+    }
+    
+    public void agregarProducto(Producto producto){
+        productos[ultimo] = producto;
+        ultimo++;
+    }
+    
+    public void listarProductos(){
+    
+        for(int i =0; i < ultimo; i++){
+            System.out.println(productos[i]);
+            //productos[i].imprimir();
+            System.out.println("-----------");
+        }
+    }    
+        
+    public int procesarComandos(String comando){
+    
+        String[] comandoArr = comando.split("&");  
+
+        /*
+            1&nombre&precio&codigo
+            1&nombre&precio&codigo  // 1&Libro&nombre&precio&codigo&nro_paginas
+                                    // 1&Pelicula&nombre&precio&codigo&duracion
+            2 Listar
+            3 Salir
+        */
+
+        int opcion = Integer.parseInt(comandoArr[0]);
+
+        switch(opcion){
+            case 1 -> {
+                String tipo = comandoArr[1];
+                String nombre = comandoArr[2];
+                double precio = Double.parseDouble(comandoArr[3]);
+                String codigo = comandoArr[4];
+                /*Producto product = new Producto(nombre,precio,codigo);
+                agregarProducto(product);*/
+                if( tipo.equals("Libro")){
+                    int n = Integer.parseInt(comandoArr[5]);
+                    Libro libro = new Libro(n,nombre,precio,codigo);
+                    agregarProducto(libro);
+                } else {
+                    double duracion = Double.parseDouble(comandoArr[5]);
+                    Pelicula peli = new Pelicula(duracion,nombre,precio,codigo);
+                    agregarProducto(peli);
+                }
+            }
+
+            case 2 -> listarProductos();
+                
+            case 3 -> {
+            }
+        }
+//                System.exit(0);
+        
+        return opcion;
+    }
+    
+    public static void main(String[] args){
+        int opcion;
+        Tiendavideo tienda = new Tiendavideo("blockbustaer");
+        Scanner sc = new Scanner(System.in);
+    
+        do{
+            String linea = sc.nextLine();
+            opcion = tienda.procesarComandos(linea);
+        }while(opcion != 3);
+    
+    }
+    
+}
